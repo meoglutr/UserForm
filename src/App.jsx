@@ -153,7 +153,7 @@ function App() {
                   htmlFor="email"
                   className="block text-base font-medium text-[#07074D] mb-3"
                 >
-                  E-Mail Adresiniz
+                  E-Mail 
                 </label>
                 <input
                   type="email"
