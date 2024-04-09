@@ -73,7 +73,7 @@ function App() {
       age: "",
       height: "",
       weight: "",
-      gender: "",
+      gender: gender,
     };
     const Meal = {
       meals: selectOptionMeals.map((option) => option.value),
@@ -84,13 +84,15 @@ function App() {
       Diseases: selectOptionDiseases.map((option) => option.value),
     };
     formData.forEach((value, key) => {
+      if (Personal.gender == "") {
+        debugger
+        setErrors((prevErrors) => ({ ...prevErrors, "gender": true }));
+      }
       if (key in Personal) {
         if (value == "") {
-          debugger;
           setErrors((prevErrors) => ({ ...prevErrors, [key]: true }));
         } else {
           Personal[key] = value;
-          console.log("kaydettim");
         }
       }
     });
@@ -102,7 +104,9 @@ function App() {
       },
     ];
 
-    console.log(formDataObject);
+    if (errors !== "" && Personal.gender !== "") {
+      console.log(formDataObject);
+    }
   };
 
   return (
@@ -170,7 +174,7 @@ function App() {
                   type="text"
                   name="PhoneNumber"
                   id="PhoneNumber"
-                  placeholder="(555) 123-456"
+                  placeholder="(555) 123-45-67"
                   className={`rounded-md border ${
                     errors.PhoneNumber ? "border-red-500" : "border-[#e0e0e0]"
                   } bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md w-full`}
@@ -279,7 +283,7 @@ function App() {
                 <h3 className="text-base font-medium text-[#07074D] mb-3">
                   Cinsiyetiniz
                 </h3>
-                <div className="border rounded-md p-4 flex items-center justify-between">
+                <div className={`border ${errors.gender ? "border-red-500" : "border-[#e0e0e0]"} rounded-md p-4 flex items-center justify-between`}>
                   <div>
                     <input
                       type="radio"
@@ -291,7 +295,7 @@ function App() {
                     />
                     <label
                       htmlFor="gender1"
-                      className="inline-block cursor-pointer bg-white border border-[#e0e0e0] py-2 px-4 rounded-md"
+                      className="inline-block cursor-pointer bg-white border  py-2 px-4 rounded-md"
                     >
                       Erkek
                     </label>
@@ -307,12 +311,17 @@ function App() {
                     />
                     <label
                       htmlFor="gender2"
-                      className="inline-block cursor-pointer bg-white border border-[#e0e0e0] py-2 px-4 rounded-md"
+                      className="inline-block cursor-pointer bg-white border  py-2 px-4 rounded-md"
                     >
                       Kadın
                     </label>
                   </div>
                 </div>
+                {errors.gender && (
+                  <p className="text-xs text-red-500">
+                    Cinsiyet seçimi yapmalısınız.
+                  </p>
+                )}
               </div>
               {isPregnantVisible && (
                 <div className="w-full sm:w-1/2">
