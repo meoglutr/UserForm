@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+input[type="radio"]:checked + label {
+    background-color: #3182ce;
+    color: #fff;
+  }

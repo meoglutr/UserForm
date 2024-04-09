@@ -1,0 +1,22 @@
+[
+  {
+    "TenantId": "f9c7c5fd-547c-49a2-a488-dc09979b860e",
+    "Personal": {
+      "PhoneNumber": "318012628395",
+      "FirstName": "Mary",
+      "LastName": "J. Blanchard",
+      "Gender": 1,
+      "Age": 15,
+      "Height": 120,
+      "Weight": 124
+    },
+    "Meal": {
+      "Meals": [0, 3],
+      "NutritionIdsOfDislikes": [1, 33, 5]
+    },
+    "PrivateSituation": {
+      "IsPregnant": false,
+      "Diseases": [0] 
+    }
+  }
+]
