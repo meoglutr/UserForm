@@ -85,8 +85,7 @@ function App() {
     };
     formData.forEach((value, key) => {
       if (Personal.gender == "") {
-        debugger
-        setErrors((prevErrors) => ({ ...prevErrors, "gender": true }));
+        setErrors((prevErrors) => ({ ...prevErrors, gender: true }));
       }
       if (key in Personal) {
         if (value == "") {
@@ -104,7 +103,8 @@ function App() {
       },
     ];
 
-    if (errors !== "" && Personal.gender !== "") {
+    //buraya sorgu eklenecek
+    if (errors !== "") {
       console.log(formDataObject);
     }
   };
@@ -283,7 +283,11 @@ function App() {
                 <h3 className="text-base font-medium text-[#07074D] mb-3">
                   Cinsiyetiniz
                 </h3>
-                <div className={`border ${errors.gender ? "border-red-500" : "border-[#e0e0e0]"} rounded-md p-4 flex items-center justify-between`}>
+                <div
+                  className={`border ${
+                    errors.gender ? "border-red-500" : "border-[#e0e0e0]"
+                  } rounded-md p-4 flex items-center justify-between`}
+                >
                   <div>
                     <input
                       type="radio"
