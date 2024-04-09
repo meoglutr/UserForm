@@ -4,6 +4,8 @@ import InputMask from "react-input-mask";
 import Select from "react-select";
 function App() {
   const [selectOptionDiseases, setSelectOptionDiseases] = useState([]);
+  const [selectOptionMeals, setSelectOptionMeals] = useState([]);
+  const [selectOptionNutrition, setSelectOptionNutrition] = useState([]);
 
   const optionDiseases = [
     { value: "mideUlseri", label: "Mide Ülseri" },
@@ -13,16 +15,12 @@ function App() {
     { value: "tansiyon", label: "Tansiyon (Hipertansiyon/Hipotansiyon)" },
   ];
 
-  const [selectOptionMeals, setSelectOptionMeals] = useState([]);
-
   const optionMeals = [
     { value: "breakfast", label: "Kahvaltı" },
     { value: "lunch", label: "Öğle Yemeği" },
     { value: "snack", label: "Ara Öğün" },
     { value: "dinner", label: "Akşam Yemeği" },
   ];
-
-  const [selectOptionNutrition, setSelectOptionNutrition] = useState([]);
 
   const optionNutrition = [
     { value: "Meyve", label: "Meyve" },
@@ -54,38 +52,6 @@ function App() {
     { value: "Şehriye", label: "Şehriye" },
   ];
 
-  const handleForm = (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const Personal = {
-      PhoneNumber: formData.get("PhoneNumber"),
-      Firstname: formData.get("Firstname"),
-      lastName: formData.get("lastName"),
-      email: formData.get("email"),
-      age: formData.get("date"),
-      height: formData.get("height"),
-      weight: formData.get("weight"),
-      gender: formData.get("gender"),
-    };
-    const meal = {
-      meals: selectOptionMeals.map((option) => option.value),
-      nutrition: selectOptionNutrition.map((option) => option.value),
-    };
-    const PrivateSituation = {
-      IsPregnant: formData.get("IsPregnant"),
-      Diseases: selectOptionDiseases.map((option) => option.value),
-    };
-    const formDataObject = [
-      {
-        Personal,
-        meal,
-        PrivateSituation,
-      },
-    ];
-
-    console.log(formDataObject);
-  };
-
   const [gender, setGender] = useState("");
   const [isPregnantVisible, setIsPregnantVisible] = useState(false);
   const handleGenderChange = (event) => {
@@ -93,6 +59,52 @@ function App() {
     setGender(selectedGender);
     setIsPregnantVisible(selectedGender === "Kadın");
   };
+
+  const [errors, setErrors] = useState({});
+  const handleForm = (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+
+    const Personal = {
+      PhoneNumber: "",
+      Firstname: "",
+      lastName: "",
+      email: "",
+      age: "",
+      height: "",
+      weight: "",
+      gender: "",
+    };
+    const Meal = {
+      meals: selectOptionMeals.map((option) => option.value),
+      nutrition: selectOptionNutrition.map((option) => option.value),
+    };
+    const PrivateSituation = {
+      IsPregnant: formData.get("IsPregnant"),
+      Diseases: selectOptionDiseases.map((option) => option.value),
+    };
+    formData.forEach((value, key) => {
+      if (key in Personal) {
+        if (value == "") {
+          debugger;
+          setErrors((prevErrors) => ({ ...prevErrors, [key]: true }));
+        } else {
+          Personal[key] = value;
+          console.log("kaydettim");
+        }
+      }
+    });
+    const formDataObject = [
+      {
+        Personal,
+        Meal,
+        PrivateSituation,
+      },
+    ];
+
+    console.log(formDataObject);
+  };
+
   return (
     <>
       <div className="flex items-center justify-center p-8 w-full bg-gray-300">
@@ -111,8 +123,15 @@ function App() {
                   name="Firstname"
                   id="Firstname"
                   placeholder="İsim"
-                  className="rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md w-full"
+                  className={`rounded-md border ${
+                    errors.Firstname ? "border-red-500" : "border-[#e0e0e0]"
+                  } bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md w-full`}
                 />
+                {errors.Firstname && (
+                  <p className="text-xs text-red-500">
+                    İsim alanı boş bırakılamaz.
+                  </p>
+                )}
               </div>
               <div className="w-1/2">
                 <label
@@ -126,8 +145,15 @@ function App() {
                   name="lastName"
                   id="lastName"
                   placeholder="Soy İsminiz"
-                  className="rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md w-full"
+                  className={`rounded-md border ${
+                    errors.lastName ? "border-red-500" : "border-[#e0e0e0]"
+                  } bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md w-full`}
                 />
+                {errors.lastName && (
+                  <p className="text-xs text-red-500">
+                    Soy İsim alanı boş bırakılamaz.
+                  </p>
+                )}
               </div>
             </div>
 
@@ -140,27 +166,34 @@ function App() {
                   Tel. Numaranız
                 </label>
                 <InputMask
-                  mask={"(999) 999-999"}
+                  mask={"(999) 999-99-99"}
                   type="text"
                   name="PhoneNumber"
                   id="PhoneNumber"
                   placeholder="(555) 123-456"
-                  className="rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md w-full"
+                  className={`rounded-md border ${
+                    errors.PhoneNumber ? "border-red-500" : "border-[#e0e0e0]"
+                  } bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md w-full`}
                 />
+                {errors.PhoneNumber && (
+                  <p className="text-xs text-red-500">
+                    Tel. Numaranız alanı boş bırakılamaz.
+                  </p>
+                )}
               </div>
               <div className="w-1/2">
                 <label
                   htmlFor="email"
                   className="block text-base font-medium text-[#07074D] mb-3"
                 >
-                  E-Mail 
+                  E-Mail
                 </label>
                 <input
                   type="email"
                   name="email"
                   id="email"
                   placeholder="E-Mail Adresiniz"
-                  className="rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md w-full"
+                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                 />
               </div>
             </div>
@@ -169,18 +202,25 @@ function App() {
                 <div className="w-full px-3 sm:w-1/3">
                   <div className="mb-5">
                     <label
-                      htmlFor="date"
+                      htmlFor="age"
                       className="block text-base font-medium text-[#07074D] mb-3"
                     >
                       Yaşınız
                     </label>
                     <input
                       type="number"
-                      name="date"
-                      id="date"
+                      name="age"
+                      id="age"
                       placeholder="Örn 34"
-                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                      className={`rounded-md border ${
+                        errors.age ? "border-red-500" : "border-[#e0e0e0]"
+                      } bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md w-full`}
                     />
+                    {errors.age && (
+                      <p className="text-xs text-red-500">
+                        Yaşınız alanı boş bırakılamaz.
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div className="w-full px-3 sm:w-1/3">
@@ -196,8 +236,15 @@ function App() {
                       name="height"
                       id="height"
                       placeholder="Örn 175"
-                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                      className={`rounded-md border ${
+                        errors.height ? "border-red-500" : "border-[#e0e0e0]"
+                      } bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md w-full`}
                     />
+                    {errors.height && (
+                      <p className="text-xs text-red-500">
+                        Boyunuz alanı boş bırakılamaz.
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div className="w-full px-3 sm:w-1/3">
@@ -213,8 +260,15 @@ function App() {
                       name="weight"
                       id="weight"
                       placeholder="Örn 70"
-                      className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                      className={`rounded-md border ${
+                        errors.weight ? "border-red-500" : "border-[#e0e0e0]"
+                      } bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md w-full`}
                     />
+                    {errors.weight && (
+                      <p className="text-xs text-red-500">
+                        Kilonuz alanı boş bırakılamaz.
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -377,7 +431,7 @@ function App() {
 
             <div>
               <button className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none">
-               Gönder
+                Gönder
               </button>
             </div>
           </form>
